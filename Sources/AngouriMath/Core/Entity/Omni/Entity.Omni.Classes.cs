@@ -12,6 +12,7 @@ using AngouriMath.Core.Sets;
 using AngouriMath.Functions.Boolean;
 using HonkSharp.Laziness;
 using Complex = AngouriMath.Entity.Number.Complex;
+using static AngouriMath.Entity.Set;
 
 namespace AngouriMath
 {
@@ -696,5 +697,11 @@ namespace AngouriMath
             #endregion
         }
 #pragma warning restore CS1591 // TODO: it's only for records' parameters! Remove it once you can document records parameters
+
+        public partial record Application(Entity Expression, LList<Entity> Arguments) : Entity
+        {
+            private SetMinusf New(Entity left, LList<Entity> arguments)
+                    => ReferenceEquals(Left, left) && ReferenceEquals(Right, right) ? this : new SetMinusf(left, right);
+        }
     }
 }
