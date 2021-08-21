@@ -12,11 +12,9 @@ using AngouriMath.Core.Sets;
 using AngouriMath.Functions.Boolean;
 using HonkSharp.Laziness;
 using Complex = AngouriMath.Entity.Number.Complex;
-using static AngouriMath.Entity.Set;
 
 namespace AngouriMath
 {
-
     partial record Entity
     {        
         public partial record Set : Entity
@@ -700,8 +698,19 @@ namespace AngouriMath
 
         public partial record Application(Entity Expression, LList<Entity> Arguments) : Entity
         {
-            private SetMinusf New(Entity left, LList<Entity> arguments)
-                    => ReferenceEquals(Left, left) && ReferenceEquals(Right, right) ? this : new SetMinusf(left, right);
+            private Application New(Entity expr, LList<Entity> arguments)
+                    => ReferenceEquals(Expression, expr) && ReferenceEquals(Arguments, arguments)
+                    ? this 
+                    : new Application(expr, arguments);
+
+            /// <inheritdoc/>
+            public override Entity Replace(Func<Entity, Entity> func)
+                    => func(New(Expression.Replace(func), Arguments.Map(a => a.Replace(func))));
+
+            internal override Priority Priority => Priority.Func;
+
+            /// <inheritdoc/>
+            protected override Entity[] InitDirectChildren() => (Expression + Arguments).ToArray();
         }
     }
 }

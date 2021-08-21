@@ -46,7 +46,6 @@ namespace AngouriMath.Core
         Sum = 20       | NumericalOperation,
         Minus = 20     | NumericalOperation,
         Mul = 40       | NumericalOperation,
-
         Div = 40       | NumericalOperation,
         Pow = 60       | NumericalOperation,
         Factorial = 70 | NumericalOperation,

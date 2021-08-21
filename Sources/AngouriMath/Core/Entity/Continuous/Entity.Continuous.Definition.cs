@@ -100,6 +100,7 @@ namespace AngouriMath
         public Entity Signum() => new Signumf(this);
         /// <summary><see cref="MathS.Abs(Entity)"/></summary>
         public Entity Abs() => new Absf(this);
+        public Entity Apply(params Entity[] args) => new Application(this, LList.Of(args));
 
         /// <summary>
         /// Describes any node that is a function (e. g. sin, cos, etc.)
