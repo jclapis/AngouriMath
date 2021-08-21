@@ -4,6 +4,7 @@
  * Details: https://github.com/asc-community/AngouriMath/blob/master/LICENSE.md.
  * Website: https://am.angouri.org.
  */
+using AngouriMath.Core.Exceptions;
 using AngouriMath.Core.Sets;
 
 namespace AngouriMath
@@ -246,6 +247,21 @@ namespace AngouriMath
             protected override Entity InnerSimplify()
                 => IsScalar ? AsScalar().InnerSimplified :
                 Elementwise(e => e.InnerSimplified);
+        }
+
+        partial record Application
+        {
+            private static Entity ApplyOthersIfNeeded(Entity outer, LList<Entity> arguments)
+                => arguments switch
+                {
+                    LEmpty<Entity> => outer,
+                    var nonEmpty => outer.Apply(nonEmpty)
+                };
+            protected override Entity InnerSimplify()
+                => (Expression, Arguments) switch
+                {
+                    (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs)
+                };
         }
     }
 }

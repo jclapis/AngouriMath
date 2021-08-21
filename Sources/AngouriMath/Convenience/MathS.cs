@@ -293,6 +293,12 @@ namespace AngouriMath
             => new Piecewise(cases.Select(c => new Providedf(c.expression, c.predicate)));
 
         /// <summary>
+        /// Applies the list of arguments to the given expression
+        /// </summary>
+        public static Entity Apply(Entity expr, params Entity[] arguments)
+            => expr.Apply(arguments);
+
+        /// <summary>
         /// Represents a few hyperbolic functions
         /// </summary>
         public static class Hyperbolic
