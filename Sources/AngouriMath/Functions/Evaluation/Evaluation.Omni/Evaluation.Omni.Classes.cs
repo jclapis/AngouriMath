@@ -260,7 +260,18 @@ namespace AngouriMath
             protected override Entity InnerSimplify()
                 => (Expression, Arguments) switch
                 {
-                    (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs)
+                    (var identifier, LEmpty<Entity>) => identifier,
+                    (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
+                    (Variable("cos"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Cos(), otherArgs),
+
+                    // here we create a lambda to curry this
+                    (Variable("derivative"), (var expr, LEmpty<Entity>)) => ApplyOthersIfNeeded(MathS.Derivative(expr), otherArgs),
+
+                    (Variable("derivative"), (var expr, (var x, var otherArgs))) => ApplyOthersIfNeeded(MathS.Derivative(expr, x), otherArgs),
+                    
+                    (Lambda(var x, var body), (var arg, var otherArgs)) => ApplyOthersIfNeeded(body.Substitute(x, arg), otherArgs),
+
+                    unchanged => unchanged
                 };
         }
     }
