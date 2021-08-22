@@ -5,5 +5,10 @@ using System;
 using static AngouriMath.Entity;
 using AngouriMath.Extensions;
 
-var sinApplied = "derivative".ToEntity().Apply("x ^ 3");
-Console.WriteLine(sinApplied.InnerSimplified);
+var (f, x, n) = (MathS.Var("f"), MathS.Var("x"), MathS.Var("n"));
+var number3 = f.Apply(f.Apply(f.Apply(x))).LambdaOver(x).LambdaOver(f);
+var succ = f.Apply(n.Apply(f).Apply(x)).LambdaOver(x).LambdaOver(f).LambdaOver(n);
+Console.WriteLine(number3);
+Console.WriteLine(succ);
+Console.WriteLine(succ.Apply(number3));
+Console.WriteLine(succ.Apply(number3).InnerSimplified);

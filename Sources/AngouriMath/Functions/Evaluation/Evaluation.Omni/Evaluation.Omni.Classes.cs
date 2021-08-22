@@ -265,6 +265,7 @@ namespace AngouriMath
                     (var identifier, LEmpty<Entity>) => identifier,
                     (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
                     (Variable("cos"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Cos(), otherArgs),
+
                     (Variable("derivative") v, (var expr, LEmpty<Entity>) args) => New(v, args),
                     (Variable("derivative"), (var expr, (var x, var otherArgs))) => ApplyOthersIfNeeded(MathS.Derivative(expr, x), otherArgs),
 

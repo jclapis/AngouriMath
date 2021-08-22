@@ -134,7 +134,7 @@ namespace AngouriMath
             /// <inheritdoc/>
             public override string Latexise()
                 => Expression.Latexise(Expression.Priority < Priority) + " " +
-                    " ".Join(Arguments.Select(arg => arg.Latexise(arg.Priority < Priority)));
+                    " ".Join(Arguments.Select(arg => arg.Latexise(arg.Priority <= Priority)));
         }
 
         partial record Lambda

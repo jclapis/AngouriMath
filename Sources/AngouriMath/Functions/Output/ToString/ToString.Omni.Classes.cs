@@ -161,7 +161,7 @@ namespace AngouriMath
             /// <inheritdoc/>
             public override string Stringize()
                 => Expression.Stringize(Expression.Priority < Priority) + " " +
-                    " ".Join(Arguments.Select(arg => arg.Stringize(arg.Priority < Priority)));
+                    " ".Join(Arguments.Select(arg => arg.Stringize(arg.Priority <= Priority)));
 
             /// <inheritdoc/>
             public override string ToString() => Stringize();
