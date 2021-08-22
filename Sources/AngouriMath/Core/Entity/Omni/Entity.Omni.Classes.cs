@@ -703,7 +703,9 @@ namespace AngouriMath
         public sealed partial record Application(Entity Expression, LList<Entity> Arguments) : Entity
         {
             private Application New(Entity expr, LList<Entity> arguments)
-                    => ReferenceEquals(Expression, expr) && ReferenceEquals(Arguments, arguments)
+                    => ReferenceEquals(Expression, expr)
+                    && arguments.Count() == Arguments.Count()
+                    && ((arguments, Arguments).SequencesAreEqualReferences())
                     ? this 
                     : new Application(expr, arguments);
 

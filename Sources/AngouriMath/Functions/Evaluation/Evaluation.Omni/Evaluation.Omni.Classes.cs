@@ -258,24 +258,6 @@ namespace AngouriMath
                     var nonEmpty => outer.Apply(nonEmpty)
                 };
 
-            private static Entity Curry(Func<LList<Variable>, Entity> toCurry, Entity body, int curryCount)
-            {
-                LList<Variable> vars = LList<Variable>.Empty;
-                foreach (var c in 1..curryCount)
-                {
-                    var u = Variable.CreateUnique(body, "y");
-                    vars = u + vars;
-                    body += u;
-                }
-                return toCurry(vars);
-            }
-
-            private static Entity Curry1(Func<Variable, Entity> toCurry, Entity expr)
-                => Curry(l => toCurry(l[0]), expr, 1);
-
-            private static Entity Curry2(Func<Variable, Variable, Entity> toCurry, Entity expr)
-                => Curry(l => toCurry(l[0], l[1]), expr, 1);
-
             /// <inheritdoc/>
             protected override Entity InnerSimplify()
                 => ((Expression.InnerSimplified, Arguments.Map(arg => arg.InnerSimplified)) switch
@@ -283,8 +265,7 @@ namespace AngouriMath
                     (var identifier, LEmpty<Entity>) => identifier,
                     (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
                     (Variable("cos"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Cos(), otherArgs),
-
-                    (Variable("derivative"), (var expr, LEmpty<Entity>)) => Curry1(x => MathS.Derivative(expr, x), expr),
+                    (Variable("derivative") v, (var expr, LEmpty<Entity>) args) => New(v, args),
                     (Variable("derivative"), (var expr, (var x, var otherArgs))) => ApplyOthersIfNeeded(MathS.Derivative(expr, x), otherArgs),
 
                     (Lambda(var x, var body), (var arg, var otherArgs)) => ApplyOthersIfNeeded(body.Substitute(x, arg), otherArgs),
