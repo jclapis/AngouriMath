@@ -299,6 +299,12 @@ namespace AngouriMath
             => expr.Apply(arguments);
 
         /// <summary>
+        /// Returns a lambda with the given parameter and body
+        /// </summary>
+        public static Entity Lambda(Variable param, Entity body)
+            => new Lambda(param, body);
+
+        /// <summary>
         /// Represents a few hyperbolic functions
         /// </summary>
         public static class Hyperbolic

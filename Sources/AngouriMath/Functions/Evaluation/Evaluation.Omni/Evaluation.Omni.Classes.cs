@@ -4,8 +4,8 @@
  * Details: https://github.com/asc-community/AngouriMath/blob/master/LICENSE.md.
  * Website: https://am.angouri.org.
  */
-using AngouriMath.Core.Exceptions;
 using AngouriMath.Core.Sets;
+using System;
 
 namespace AngouriMath
 {
@@ -257,22 +257,54 @@ namespace AngouriMath
                     LEmpty<Entity> => outer,
                     var nonEmpty => outer.Apply(nonEmpty)
                 };
+
+            private static Entity Curry(Func<LList<Variable>, Entity> toCurry, Entity body, int curryCount)
+            {
+                LList<Variable> vars = LList<Variable>.Empty;
+                foreach (var c in 1..curryCount)
+                {
+                    var u = Variable.CreateUnique(body, "y");
+                    vars = u + vars;
+                    body += u;
+                }
+                return toCurry(vars);
+            }
+
+            private static Entity Curry1(Func<Variable, Entity> toCurry, Entity expr)
+                => Curry(l => toCurry(l[0]), expr, 1);
+
+            private static Entity Curry2(Func<Variable, Variable, Entity> toCurry, Entity expr)
+                => Curry(l => toCurry(l[0], l[1]), expr, 1);
+
+            /// <inheritdoc/>
             protected override Entity InnerSimplify()
-                => (Expression, Arguments) switch
+                => (Expression.InnerSimplified, Arguments.Map(arg => arg.InnerSimplified)) switch
                 {
                     (var identifier, LEmpty<Entity>) => identifier,
                     (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
                     (Variable("cos"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Cos(), otherArgs),
 
-                    // here we create a lambda to curry this
-                    (Variable("derivative"), (var expr, LEmpty<Entity>)) => ApplyOthersIfNeeded(MathS.Derivative(expr), otherArgs),
-
+                    (Variable("derivative"), (var expr, LEmpty<Entity>)) => Curry1(x => MathS.Derivative(expr, x), expr),
                     (Variable("derivative"), (var expr, (var x, var otherArgs))) => ApplyOthersIfNeeded(MathS.Derivative(expr, x), otherArgs),
-                    
+
                     (Lambda(var x, var body), (var arg, var otherArgs)) => ApplyOthersIfNeeded(body.Substitute(x, arg), otherArgs),
 
-                    unchanged => unchanged
+                    _ => this
                 };
+
+            /// <inheritdoc/>
+            protected override Entity InnerEval()
+                => InnerSimplify();
+        }
+
+        partial record Lambda
+        {
+            /// <inheritdoc/>
+            protected override Entity InnerSimplify()
+                => New(Parameter, Body.InnerSimplified);
+            /// <inheritdoc/>
+            protected override Entity InnerEval()
+                => New(Parameter, Body.Evaled);
         }
     }
 }
