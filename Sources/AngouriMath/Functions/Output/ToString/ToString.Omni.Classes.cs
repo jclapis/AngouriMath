@@ -169,10 +169,12 @@ namespace AngouriMath
 
         partial record Lambda
         {
+            /// <inheritdoc/>
             public override string Stringize()
                 => Parameter.Stringize() + " -> " + Body.Stringize(Body.Priority < Priority);
 
-
+            /// <inheritdoc/>
+            public override string ToString() => Stringize();
         }
     }
 }
