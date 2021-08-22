@@ -278,7 +278,7 @@ namespace AngouriMath
 
             /// <inheritdoc/>
             protected override Entity InnerSimplify()
-                => (Expression.InnerSimplified, Arguments.Map(arg => arg.InnerSimplified)) switch
+                => ((Expression.InnerSimplified, Arguments.Map(arg => arg.InnerSimplified)) switch
                 {
                     (var identifier, LEmpty<Entity>) => identifier,
                     (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
@@ -290,6 +290,10 @@ namespace AngouriMath
                     (Lambda(var x, var body), (var arg, var otherArgs)) => ApplyOthersIfNeeded(body.Substitute(x, arg), otherArgs),
 
                     _ => this
+                }) switch
+                {
+                    var thisAgain when ReferenceEquals(thisAgain, this) => this,
+                    var newOne => newOne.InnerSimplified
                 };
 
             /// <inheritdoc/>

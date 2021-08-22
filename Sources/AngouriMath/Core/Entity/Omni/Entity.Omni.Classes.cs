@@ -700,7 +700,7 @@ namespace AngouriMath
         /// <summary>
         /// Application of arguments to the given expression
         /// </summary>
-        public partial record Application(Entity Expression, LList<Entity> Arguments) : Entity
+        public sealed partial record Application(Entity Expression, LList<Entity> Arguments) : Entity
         {
             private Application New(Entity expr, LList<Entity> arguments)
                     => ReferenceEquals(Expression, expr) && ReferenceEquals(Arguments, arguments)
@@ -717,7 +717,10 @@ namespace AngouriMath
             protected override Entity[] InitDirectChildren() => (Expression + Arguments).ToArray();
         }
 
-        public partial record Lambda(Variable Parameter, Entity Body) : Entity
+        /// <summary>
+        /// A lambda with the only parameter and its body
+        /// </summary>
+        public sealed partial record Lambda(Variable Parameter, Entity Body) : Entity
         {
             private Lambda New(Variable parameter, Entity body)
                 => ReferenceEquals(Parameter, parameter) && ReferenceEquals(Body, body)
