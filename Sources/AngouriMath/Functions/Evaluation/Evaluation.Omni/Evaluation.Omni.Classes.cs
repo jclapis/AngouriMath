@@ -263,6 +263,8 @@ namespace AngouriMath
                 => ((Expression.InnerSimplified, Arguments.Map(arg => arg.InnerSimplified)) switch
                 {
                     (var identifier, LEmpty<Entity>) => identifier,
+                    (Application(var any, var argsInner), var argsOuter) => any.Apply(argsInner.Concat(argsOuter).ToLList()),
+
                     (Variable("sin"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Sin(), otherArgs),
                     (Variable("cos"), (var x, var otherArgs)) => ApplyOthersIfNeeded(x.Cos(), otherArgs),
 
