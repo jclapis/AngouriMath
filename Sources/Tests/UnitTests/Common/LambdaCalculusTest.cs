@@ -12,6 +12,7 @@ namespace UnitTests.Common
     {
         private readonly Variable x = "x";
         private readonly Variable y = "y";
+        private readonly Variable z = "z";
         private readonly Variable f = "f";
         [Fact] public void ApplicationDoesNothingToVariable()
             => x.Apply(4).Alias(out var expected).InnerSimplified.Should().Be(expected);
@@ -39,5 +40,21 @@ namespace UnitTests.Common
 
         [Fact] public void LambdaTest6()
             => f.Apply(x.Pow(2)).Apply(x).LambdaOver(f).Apply("derivative").InnerSimplified.ShouldBe(2 * x);
+
+        [Fact] public void LambdaTest7()
+            => f.Apply(x).Apply(y).InnerSimplified.ShouldBe(f.Apply(x, y));
+
+        [Fact] public void LambdaTest8()
+            => (z * x).LambdaOver(x)
+                .Substitute(z, x)
+                .InnerSimplified
+                .ShouldBe((x * "alpha_1").LambdaOver("alpha_1"));
+
+        [Fact] public void LambdaTest9()
+            => (z * x).LambdaOver(x)
+                .LambdaOver(z)
+                .Apply(x)
+                .InnerSimplified
+                .ShouldBe((x * "alpha_1").LambdaOver("alpha_1"));
     }
 }
