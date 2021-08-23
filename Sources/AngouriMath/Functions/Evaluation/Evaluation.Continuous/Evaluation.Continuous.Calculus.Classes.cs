@@ -23,6 +23,12 @@ namespace AngouriMath
                         (var expr, Variable var, int asInt)
                             when expr.Differentiate(var, asInt) is var res and not Derivativef
                             => res.Evaled,
+                        (Application, _, _) => null,
+                        (var expr, Entity otherExpr, int asInt)
+                            when Variable.CreateTemp(otherExpr.Vars) is var tempVar
+                            && expr.Substitute(otherExpr, tempVar) is var tempSubstituted
+                            && tempSubstituted.Differentiate(tempVar) is var res and not Derivativef
+                            => res.Substitute(tempVar, otherExpr).Evaled,
                         _ => null
                     },
                     (@this, a, b, _) => ((Derivativef)@this).New(a, b)
@@ -39,6 +45,12 @@ namespace AngouriMath
                         (var expr, Variable var, int asInt)
                             when expr.Differentiate(var, asInt) is var res and not Derivativef
                             => res.InnerSimplified,
+                        (Application, _, _) => null,
+                        (var expr, Entity otherExpr, int asInt)
+                            when Variable.CreateTemp(otherExpr.Vars) is var tempVar
+                            && expr.Substitute(otherExpr, tempVar) is var tempSubstituted
+                            && tempSubstituted.Differentiate(tempVar) is var res and not Derivativef
+                            => res.Substitute(tempVar, otherExpr).InnerSimplified,
                         _ => null
                     },
                     (@this, a, b, _) => ((Derivativef)@this).New(a, b)
