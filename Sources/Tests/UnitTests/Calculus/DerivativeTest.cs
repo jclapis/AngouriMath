@@ -1,12 +1,16 @@
 ﻿using AngouriMath;
 using AngouriMath.Extensions;
 using Xunit;
+using static AngouriMath.Entity;
 
 namespace UnitTests.Calculus
 {
     public sealed class DerivativeTest
     {
-        static readonly Entity.Variable x = MathS.Var(nameof(x));
+        private static readonly Variable x = "x";
+        private static readonly Variable y = "y";
+        private static readonly Variable f = "f";
+
         [Fact]
         public void Test1()
         {
@@ -156,5 +160,22 @@ namespace UnitTests.Calculus
             var derived = func.Differentiate("x");
             Assert.Equal("-1/2 / (sqrt(1 + (-1/4) / x2)x2)".Simplify(), derived.Simplify());
         }
+
+        
+
+        [Fact] public void TestNamedAppliedFunctions1()
+            => f.Apply(x.Pow(2))  // f (x ^ 2)
+                .Differentiate(x)
+                .ShouldBe(
+                    MathS.Derivative(f.Apply(x.Pow(2)), x.Pow(2)) * (2 * x) // derivative (f (x ^ 2), x ^ 2) * (2 * x)
+                    );
+
+        [Fact] public void TestNamedAppliedFunctions2()
+            => f.Apply(x.Pow(2))
+                .Differentiate(x)
+                .LambdaOver(f)
+                .Apply("sin")
+                .InnerSimplified
+                .ShouldBe(MathS.Cos(x.Pow(2)) * (2 * x));
     }
 }

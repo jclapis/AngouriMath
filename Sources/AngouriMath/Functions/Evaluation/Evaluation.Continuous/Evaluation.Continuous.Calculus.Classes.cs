@@ -23,6 +23,7 @@ namespace AngouriMath
                         (var expr, Variable var, int asInt)
                             when expr.Differentiate(var, asInt) is var res and not Derivativef
                             => res.Evaled,
+                        (var expr, Variable var, int asInt) => null,
                         (Application, _, _) => null,
                         (var expr, Entity otherExpr, int asInt)
                             when Variable.CreateTemp(otherExpr.Vars) is var tempVar
@@ -45,6 +46,7 @@ namespace AngouriMath
                         (var expr, Variable var, int asInt)
                             when expr.Differentiate(var, asInt) is var res and not Derivativef
                             => res.InnerSimplified,
+                        (var expr, Variable var, int asInt) => null,
                         (Application, _, _) => null,
                         (var expr, Entity otherExpr, int asInt)
                             when Variable.CreateTemp(otherExpr.Vars) is var tempVar
